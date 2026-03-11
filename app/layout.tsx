@@ -52,38 +52,39 @@ export default function RootLayout({
                 >
                     <ClerkProvider>
                         <div className="w-full">
-                            <NavigationMenu className="w-full">
-                                <NavigationMenuList>
-                                    {/* Theme Toggle */}
-                                    <NavigationMenuItem>
-                                        <ModeToggle></ModeToggle>
-                                    </NavigationMenuItem>
+                            <header className="fixed inset-x-0 top-0 z-50">
+                                <NavigationMenu className="w-full px-4 py-3">
+                                    <NavigationMenuList className="rounded-xl border bg-background/85 p-1 shadow-lg backdrop-blur">
+                                        <NavigationMenuItem>
+                                            <ModeToggle></ModeToggle>
+                                        </NavigationMenuItem>
 
-                                    <Show when="signed-out">
-                                        <NavigationMenuItem>
-                                            <NavigationMenuLink
-                                                asChild
-                                                className={navigationMenuTriggerStyle()}
-                                            >
-                                                <SignInButton></SignInButton>
-                                            </NavigationMenuLink>
-                                        </NavigationMenuItem>
-                                        <NavigationMenuItem>
-                                            <NavigationMenuLink
-                                                asChild
-                                                className={navigationMenuTriggerStyle()}
-                                            >
-                                                <SignUpButton></SignUpButton>
-                                            </NavigationMenuLink>
-                                        </NavigationMenuItem>
-                                    </Show>
-                                    <Show when="signed-in">
-                                        <NavigationMenuItem>
-                                            <UserButton></UserButton>
-                                        </NavigationMenuItem>
-                                    </Show>
-                                </NavigationMenuList>
-                            </NavigationMenu>
+                                        <Show when="signed-out">
+                                            <NavigationMenuItem>
+                                                <NavigationMenuLink
+                                                    asChild
+                                                    className={navigationMenuTriggerStyle()}
+                                                >
+                                                    <SignInButton></SignInButton>
+                                                </NavigationMenuLink>
+                                            </NavigationMenuItem>
+                                            <NavigationMenuItem>
+                                                <NavigationMenuLink
+                                                    asChild
+                                                    className={navigationMenuTriggerStyle()}
+                                                >
+                                                    <SignUpButton></SignUpButton>
+                                                </NavigationMenuLink>
+                                            </NavigationMenuItem>
+                                        </Show>
+                                        <Show when="signed-in">
+                                            <NavigationMenuItem>
+                                                <UserButton></UserButton>
+                                            </NavigationMenuItem>
+                                        </Show>
+                                    </NavigationMenuList>
+                                </NavigationMenu>
+                            </header>
                             {children}
                         </div>
                     </ClerkProvider>
