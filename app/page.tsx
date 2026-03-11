@@ -8,7 +8,6 @@ export default async function Home() {
 
     if (isAuthenticated) {
         const user = await currentUser();
-        console.log(user);
         if (user) {
             if (!user.publicMetadata?.role) {
                 await setUserRole(user, userRoleEnum.enumValues[0]);
