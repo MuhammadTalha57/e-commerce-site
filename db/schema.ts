@@ -8,3 +8,5 @@ export const users = pgTable("users", {
     email: text("email").notNull().unique(),
     role: userRoleEnum("role").notNull(),
 });
+
+export type UserRole = (typeof userRoleEnum.enumValues)[number];
