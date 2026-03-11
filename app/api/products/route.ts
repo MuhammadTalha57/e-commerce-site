@@ -30,19 +30,22 @@ export async function POST(req: Request) {
     try {
         const body = await req.json();
 
-        const insertedProduct = await db.insert(products).values({
-            name: body.name,
-            description: body.description,
-            price: body.price,
-            imageUrl: body.imageUrl,
-            quantity: body.quantity,
-        });
+        const insertedProduct = await db
+            .insert(products)
+            .values({
+                name: body.name,
+                description: body.description,
+                price: body.price,
+                imageUrl: body.imageUrl,
+                quantity: body.quantity,
+            })
+            .returning();
 
         return NextResponse.json(
             {
                 success: true,
                 message: "Product Created",
-                data: insertedProduct,
+                data: insertedProduct[0],
             },
             { status: 201 },
         );
