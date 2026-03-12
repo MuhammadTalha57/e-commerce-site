@@ -9,6 +9,7 @@ import {
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 import {
@@ -86,6 +87,11 @@ export default function RootLayout({
                                 </NavigationMenu>
                             </header>
                             {children}
+                            <Toaster
+                                richColors
+                                closeButton
+                                position="top-right"
+                            />
                         </div>
                     </ClerkProvider>
                 </ThemeProvider>
