@@ -62,6 +62,11 @@ export default function RootLayout({
                                             </NavigationMenuLink>
                                         </NavigationMenuItem>
                                         <NavigationMenuItem>
+                                            <NavigationMenuLink>
+                                                Cart
+                                            </NavigationMenuLink>
+                                        </NavigationMenuItem>
+                                        <NavigationMenuItem>
                                             <ModeToggle></ModeToggle>
                                         </NavigationMenuItem>
 

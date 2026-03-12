@@ -37,6 +37,7 @@ export default function ProductCard({
     onDelete,
 }: ProductCardProps) {
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isAddingToCart, setIsAddingToCart] = useState(false);
     const [open, setOpen] = useState(false);
 
     const handleDelete = async () => {
@@ -51,6 +52,31 @@ export default function ProductCard({
             toast.error(message);
         } finally {
             setIsDeleting(false);
+        }
+    };
+
+    const handleAddToCart = async () => {
+        setIsAddingToCart(true);
+        try {
+            const response = await fetch("/api/cart", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ productId: product.id, quantity: 1 }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to add to cart");
+            }
+
+            toast.success(`${product.name} added to cart!`);
+        } catch (error) {
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : "Failed to add to cart";
+            toast.error(message);
+        } finally {
+            setIsAddingToCart(false);
         }
     };
 
@@ -105,11 +131,11 @@ export default function ProductCard({
                         <Button
                             size="sm"
                             className="flex-1"
-                            disabled={!inStock}
-                            onClick={() => toast.info("Added to cart!")}
+                            disabled={!inStock || isAddingToCart}
+                            onClick={handleAddToCart}
                         >
                             <ShoppingCart className="mr-2 h-4 w-4" />
-                            Add to Cart
+                            {isAddingToCart ? "Adding..." : "Add to Cart"}
                         </Button>
 
                         {isAdmin && (
