@@ -111,3 +111,4 @@ export const orderItems = pgTable(
 );
 
 export type UserRole = (typeof userRoleEnum.enumValues)[number];
+export type OrderStatus = (typeof orderStatusEnum.enumValues)[number];

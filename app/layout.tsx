@@ -12,6 +12,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
+import Link from "next/link";
 import {
     NavigationMenu,
     NavigationMenuList,
@@ -57,13 +58,31 @@ export default function RootLayout({
                                 <NavigationMenu className="w-full px-4 py-3">
                                     <NavigationMenuList className="rounded-xl border bg-background/85 p-1 px-5 shadow-lg backdrop-blur">
                                         <NavigationMenuItem>
-                                            <NavigationMenuLink>
-                                                Products
+                                            <NavigationMenuLink
+                                                asChild
+                                                className={navigationMenuTriggerStyle()}
+                                            >
+                                                <Link href="/products">
+                                                    Products
+                                                </Link>
                                             </NavigationMenuLink>
                                         </NavigationMenuItem>
                                         <NavigationMenuItem>
-                                            <NavigationMenuLink>
-                                                Cart
+                                            <NavigationMenuLink
+                                                asChild
+                                                className={navigationMenuTriggerStyle()}
+                                            >
+                                                <Link href="/cart">Cart</Link>
+                                            </NavigationMenuLink>
+                                        </NavigationMenuItem>
+                                        <NavigationMenuItem>
+                                            <NavigationMenuLink
+                                                asChild
+                                                className={navigationMenuTriggerStyle()}
+                                            >
+                                                <Link href="/orders">
+                                                    Orders
+                                                </Link>
                                             </NavigationMenuLink>
                                         </NavigationMenuItem>
                                         <NavigationMenuItem>
