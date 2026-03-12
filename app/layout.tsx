@@ -55,7 +55,12 @@ export default function RootLayout({
                         <div className="w-full">
                             <header className="fixed inset-x-0 top-0 z-50">
                                 <NavigationMenu className="w-full px-4 py-3">
-                                    <NavigationMenuList className="rounded-xl border bg-background/85 p-1 shadow-lg backdrop-blur">
+                                    <NavigationMenuList className="rounded-xl border bg-background/85 p-1 px-5 shadow-lg backdrop-blur">
+                                        <NavigationMenuItem>
+                                            <NavigationMenuLink>
+                                                Products
+                                            </NavigationMenuLink>
+                                        </NavigationMenuItem>
                                         <NavigationMenuItem>
                                             <ModeToggle></ModeToggle>
                                         </NavigationMenuItem>
