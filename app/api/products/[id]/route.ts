@@ -36,7 +36,7 @@ export async function GET(
     }
 }
 
-export async function UPDATE(
+export async function PUT(
     req: Request,
     { params }: { params: { id: string } },
 ) {
@@ -64,7 +64,7 @@ export async function UPDATE(
                         : "Product Not Updated",
                 data: updatedProduct.length > 0 ? updatedProduct[0] : null,
             },
-            { status: updatedProduct.length > 0 ? 201 : 400 },
+            { status: updatedProduct.length > 0 ? 200 : 400 },
         );
     } catch (error) {
         console.error(error);
