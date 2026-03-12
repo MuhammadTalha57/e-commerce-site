@@ -1,16 +1,62 @@
 import db from "@/db/drizzle";
 import { products } from "@/db/schema";
 import { NextRequest, NextResponse } from "next/server";
+import { like, and, gte, lte } from "drizzle-orm";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
-        const allProducts = await db.select().from(products);
+        const searchParams = request.nextUrl.searchParams;
+        const search = searchParams.get("search") || "";
+        const minPrice = searchParams.get("minPrice");
+        const maxPrice = searchParams.get("maxPrice");
+        const page = parseInt(searchParams.get("page") || "1", 10);
+        const limit = parseInt(searchParams.get("limit") || "12", 10);
+
+        const offset = (page - 1) * limit;
+
+        const filters = [];
+
+        if (search) {
+            filters.push(like(products.name, `%${search}%`));
+        }
+
+        if (minPrice) {
+            filters.push(gte(products.price, parseFloat(minPrice)));
+        }
+
+        if (maxPrice) {
+            filters.push(lte(products.price, parseFloat(maxPrice)));
+        }
+
+        const whereClause = filters.length > 0 ? and(...filters) : undefined;
+
+        const [allProducts, countResult] = await Promise.all([
+            db
+                .select()
+                .from(products)
+                .where(whereClause)
+                .orderBy(products.name)
+                .limit(limit)
+                .offset(offset),
+            db.select({ count: products.id }).from(products).where(whereClause),
+        ]);
+
+        const total = countResult.length;
+        const totalPages = Math.ceil(total / limit);
 
         return NextResponse.json(
             {
                 success: true,
-                message: "All Products Fetched",
-                data: allProducts,
+                message: "Products Fetched",
+                data: {
+                    products: allProducts,
+                    pagination: {
+                        page,
+                        limit,
+                        total,
+                        totalPages,
+                    },
+                },
             },
             { status: 200 },
         );
