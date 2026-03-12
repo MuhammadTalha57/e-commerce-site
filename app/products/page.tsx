@@ -3,9 +3,9 @@ import { currentUser } from "@clerk/nextjs/server";
 import CreateForm from "@/components/ui/products/create-form";
 import ProductGrid from "@/components/ui/products/product-grid";
 import ProductSearchClient from "@/app/products/search-client";
-import { users } from "@/db/schema";
+import { users, products as productsTable } from "@/db/schema";
 import db from "@/db/drizzle";
-import { eq } from "drizzle-orm";
+import { eq, and, gte, lte, like } from "drizzle-orm";
 
 async function getProducts(
     search?: string,
@@ -13,23 +13,59 @@ async function getProducts(
     maxPrice?: string,
     page?: string,
 ) {
-    const searchParams = new URLSearchParams();
-    if (search) searchParams.set("search", search);
-    if (minPrice) searchParams.set("minPrice", minPrice);
-    if (maxPrice) searchParams.set("maxPrice", maxPrice);
-    searchParams.set("page", page || "1");
-    searchParams.set("limit", "12");
+    const pageNum = parseInt(page || "1", 10);
+    const limit = 12;
+    const offset = (pageNum - 1) * limit;
 
-    const response = await fetch(
-        `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/products?${searchParams}`,
-        { cache: "no-store" },
-    );
+    const filters = [];
 
-    if (!response.ok) {
-        throw new Error("Failed to fetch products");
+    if (search) {
+        filters.push(like(productsTable.name, `%${search}%`));
     }
 
-    return response.json();
+    if (minPrice) {
+        filters.push(gte(productsTable.price, parseFloat(minPrice)));
+    }
+
+    if (maxPrice) {
+        filters.push(lte(productsTable.price, parseFloat(maxPrice)));
+    }
+
+    const whereClause = filters.length > 0 ? and(...filters) : undefined;
+
+    try {
+        const [allProducts, countResult] = await Promise.all([
+            db
+                .select()
+                .from(productsTable)
+                .where(whereClause)
+                .orderBy(productsTable.name)
+                .limit(limit)
+                .offset(offset),
+            db
+                .select({ count: productsTable.id })
+                .from(productsTable)
+                .where(whereClause),
+        ]);
+
+        const total = countResult.length;
+        const totalPages = Math.ceil(total / limit);
+
+        return {
+            success: true,
+            data: {
+                products: allProducts,
+                pagination: {
+                    page: pageNum,
+                    limit,
+                    total,
+                    totalPages,
+                },
+            },
+        };
+    } catch (error) {
+        throw new Error("Failed to fetch products from database");
+    }
 }
 
 async function checkIsAdmin(): Promise<boolean> {
