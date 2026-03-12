@@ -36,6 +36,13 @@
       "when": 1773289109485,
       "tag": "0004_chemical_gambit",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1773291807352,
+      "tag": "0005_hard_vengeance",
+      "breakpoints": true
     }
   ]
 }

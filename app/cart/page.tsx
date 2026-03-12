@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import CartItem from "@/components/ui/cart/cart-item";
 import CartSummary from "@/components/ui/cart/cart-summary";
+import CheckoutStatusToast from "@/components/ui/cart/checkout-status-toast";
 import { ShoppingCart } from "lucide-react";
 import { redirect } from "next/navigation";
 import db from "@/db/drizzle";
@@ -101,6 +102,7 @@ export default async function CartPage() {
     if (!cartData || cartData.items.length === 0) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+                <CheckoutStatusToast />
                 <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
                     {/* Header */}
                     <div className="mb-12">
@@ -130,6 +132,7 @@ export default async function CartPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+            <CheckoutStatusToast />
             <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8">

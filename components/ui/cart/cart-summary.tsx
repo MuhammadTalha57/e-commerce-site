@@ -2,6 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useState } from "react";
 
 interface CartSummaryProps {
     subtotal: number;
@@ -18,6 +20,42 @@ export default function CartSummary({
     itemCount,
     isCheckoutDisabled = false,
 }: CartSummaryProps) {
+    const [isRedirectingToCheckout, setIsRedirectingToCheckout] =
+        useState(false);
+
+    const handleCheckout = async () => {
+        setIsRedirectingToCheckout(true);
+
+        try {
+            const response = await fetch("/api/checkout/session", {
+                method: "POST",
+            });
+
+            const data = (await response.json()) as {
+                success?: boolean;
+                message?: string;
+                data?: {
+                    checkoutUrl?: string;
+                };
+            };
+
+            if (!response.ok || !data.success || !data.data?.checkoutUrl) {
+                throw new Error(
+                    data.message ?? "Failed to start Stripe checkout",
+                );
+            }
+
+            window.location.href = data.data.checkoutUrl;
+        } catch (error) {
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : "Failed to start checkout";
+            toast.error(message);
+            setIsRedirectingToCheckout(false);
+        }
+    };
+
     return (
         <div className="space-y-4 rounded-lg border bg-card p-6">
             <h2 className="text-xl font-bold">Order Summary</h2>
@@ -47,11 +85,18 @@ export default function CartSummary({
             </div>
 
             <Button
-                disabled={isCheckoutDisabled || itemCount === 0}
+                disabled={
+                    isCheckoutDisabled ||
+                    itemCount === 0 ||
+                    isRedirectingToCheckout
+                }
                 className="w-full"
                 size="lg"
+                onClick={handleCheckout}
             >
-                Proceed to Checkout
+                {isRedirectingToCheckout
+                    ? "Redirecting to Stripe..."
+                    : "Proceed to Checkout"}
             </Button>
 
             <Link href="/products">
